@@ -231,6 +231,23 @@ const STYLES = `
   .h2-in { animation: h2-in 280ms cubic-bezier(.2,.7,.3,1) both; }
 
   @keyframes h2-dot { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+  /* Frame sizing lives here (not inline) so the phone block can retune it.
+     Inner text sizes are em-based off this root so they scale together.
+     Aspect harmonized with HeroDiagram (920/525) so tabbing doesn't jump. */
+  .cast-hero2-frame {
+    aspect-ratio: 920 / 525;
+    font-size: 13.5px;
+  }
+
+  /* Phones: taller frame (matching HeroDiagram) and smaller type so more of
+     the terminal transcript is visible at once. */
+  @media (max-width: 640px) {
+    .cast-hero2-frame {
+      aspect-ratio: 920 / 908;
+      font-size: 11.5px;
+    }
+  }
 `;
 
 // --- Bits -----------------------------------------------------------------
@@ -312,7 +329,7 @@ function AsciiBlock({ lines }: { lines: string[] }) {
         margin: '14px 0 2px',
         color: T.textPrimary,
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 13.5,
+        fontSize: '1em',
         lineHeight: 1.5,
         whiteSpace: 'pre',
         overflow: 'hidden',
@@ -454,7 +471,7 @@ function InputBar({ state }: { state: State }) {
         alignItems: 'baseline',
         gap: 10,
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 14,
+        fontSize: '1.04em', // 14px at the 13.5px desktop root
       }}
     >
       <span style={{ color: T.pink, flexShrink: 0 }}>&gt;</span>
@@ -502,17 +519,17 @@ function AnimatedTerminal({ runKey }: { runKey: number }) {
 
   return (
     <div
+      className="cast-hero2-frame"
       style={{
         // No border here — when embedded in HeroTabs the tab window frames it.
-        // Aspect harmonized with HeroDiagram (920/525) so tabbing doesn't jump.
+        // Aspect + root font-size live in STYLES (.cast-hero2-frame) so the
+        // phone media query can retune them.
         borderRadius: 0,
         overflow: 'hidden',
         background: '#000',
         display: 'flex',
         flexDirection: 'column',
-        aspectRatio: '920 / 525',
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 13.5,
       }}
     >
       {/* Banner header — identical register to the static ClaudeCodeMock. */}
@@ -522,7 +539,7 @@ function AnimatedTerminal({ runKey }: { runKey: number }) {
         </div>
         <div
           style={{
-            fontSize: 12.5,
+            fontSize: '0.93em', // 12.5px at the 13.5px desktop root
             lineHeight: 1.45,
             color: T.textSecondary,
             display: 'flex',

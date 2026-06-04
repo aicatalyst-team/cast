@@ -38,7 +38,10 @@ export function TurboPascalBlock() {
           <span style={{ flex: 1, overflow: 'hidden' }}>{'═'.repeat(80)}</span>
           <span>{'[↑][↓]══╗'}</span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '0 14px', padding: '10px 14px 8px' }}>
+        {/* minmax(0,1fr) lets the code track shrink below its min-content on
+            phones; overflow-wrap on the code div then breaks the long URL.
+            At the block's 620px max width nothing wraps. */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: '0 14px', padding: '10px 14px 8px' }}>
           <div
             style={{
               color: 'var(--tp-gutter)',
@@ -49,7 +52,7 @@ export function TurboPascalBlock() {
           >
             {Array.from({ length: 8 }, (_, i) => String(i + 1).padStart(2, '0')).join('\n')}
           </div>
-          <div style={{ whiteSpace: 'pre-wrap' }}>
+          <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
             <div>
               <span style={kw}>program</span>
               <span style={body}> Cast;</span>

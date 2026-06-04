@@ -1,5 +1,6 @@
 import type { ComponentChildren } from 'preact';
 import { Fragment } from 'preact';
+import { useState } from 'preact/hooks';
 import { Sidebar } from './Sidebar';
 import { TOC, type TOCItem, slugify } from './TOC';
 import { PrevNext } from './PrevNext';
@@ -17,15 +18,26 @@ interface Props {
 
 export function DocsLayout({ url, crumbs, title, lede, toc, children }: Props) {
   const { prev, next } = neighbors(url);
+  const [navOpen, setNavOpen] = useState(false);
 
   return (
     <div
       class="container"
       style={{ display: 'flex', gap: 36, minHeight: 'calc(100vh - 60px)' }}
     >
-      <Sidebar />
+      <Sidebar open={navOpen} onNavigate={() => setNavOpen(false)} />
+      {navOpen && (
+        <div class="docs-nav-backdrop" onClick={() => setNavOpen(false)} />
+      )}
 
       <main style={{ flex: 1, padding: '40px 0', minWidth: 0, maxWidth: 760 }}>
+        <button
+          class="docs-nav-toggle"
+          onClick={() => setNavOpen((o) => !o)}
+          aria-label="Toggle docs navigation"
+        >
+          ☰ Docs menu
+        </button>
         <div
           style={{
             display: 'flex',

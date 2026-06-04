@@ -6,7 +6,9 @@
 
 *Your agent team, on your machine.*
 
-developer alpha · MIT · [getcast.dev](https://getcast.dev)
+[![status: alpha](https://img.shields.io/badge/status-alpha-orange)](https://github.com/yaodub/cast/releases) [![version](https://img.shields.io/github/v/tag/yaodub/cast?label=version)](https://github.com/yaodub/cast/tags) [![license: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+[getcast.dev](https://getcast.dev)
 
 </div>
 
@@ -30,9 +32,11 @@ Cast is an open-source harness for multi-user, multi-agent systems. Self-hosted,
 
 Agent frameworks today assume one developer talking to one agent. That holds up until a team or a household wants to share the same setup. Then the architecture won't bend. Identity, who's allowed to reach what, agents coordinating with each other: bolted on afterward, if at all. Cast is the harness that should have been underneath.
 
-## Building agents with Claude Code
+## Two ways to build
 
-Build agents from Claude Code with three Cast skills (`/cast-build`, `/cast-refine`, `/cast-debug`) that turn an ordinary session into one fluent in Cast's vocabulary and land every change through your review.
+An agent is a folder of files, and Cast gives you two ways to write them.
+
+Design, the chat-based builder in the dashboard, scaffolds an agent from a plain-English description. Or you build from Claude Code, where three Cast skills (`/cast-build`, `/cast-refine`, `/cast-debug`) turn an ordinary session into one fluent in Cast's vocabulary and land every change through your review. Both edit the same files under `~/.cast/agents/`, so you can start in one and finish in the other.
 
 <div align="center">
 
@@ -55,7 +59,7 @@ When it's up, your browser opens to the dashboard at `http://localhost:5051/admi
 
 ## First run
 
-The server starts empty. With no agents yet, the dashboard docks Design, Cast's chat-based agent builder, and asks what you want to build. Describe it in plain English, like "an agent that reads my morning email and flags what's worth a reply," and Design scaffolds it for you, as files. Configure wires in your model and secrets, you flip it live, then you pair in the people you trust, and each of them gets their own private conversation with the same agent, over Slack, Telegram, or the web.
+The server starts empty. With no agents yet, the dashboard docks Design and asks what you want to build. Describe it in plain English, like "an agent that reads my morning email and flags what's worth a reply," and Design scaffolds it for you, as files (the same files you'd edit from Claude Code). Configure wires in your model and secrets, you flip it live, then you pair in the people you trust, and each of them gets their own private conversation with the same agent, over Slack, Telegram, or the web.
 
 ## What's in here
 

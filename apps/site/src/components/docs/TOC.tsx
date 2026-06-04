@@ -13,6 +13,7 @@ interface Props {
 export function TOC({ items, editUrl }: Props) {
   return (
     <aside
+      class="docs-toc"
       style={{
         width: 200,
         flexShrink: 0,

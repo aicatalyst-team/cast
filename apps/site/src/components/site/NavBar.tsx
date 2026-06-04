@@ -1,4 +1,5 @@
 import { useLocation } from 'preact-iso';
+import { useState } from 'preact/hooks';
 import { CastLockup } from '../brand/CastLockup';
 import { Github } from '../brand/Icon';
 
@@ -10,6 +11,12 @@ const TABS: ReadonlyArray<readonly [path: string, label: string]> = [
 
 export function NavBar() {
   const { url, route } = useLocation();
+  // Mobile: tabs collapse into a dropdown under the bar.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const go = (path: string) => {
+    route(path);
+    setMenuOpen(false);
+  };
 
   return (
     <nav
@@ -23,8 +30,8 @@ export function NavBar() {
       }}
     >
       <div
-        class="container"
-        style={{ display: 'flex', alignItems: 'center', height: 60, gap: 32 }}
+        class="container nav-row"
+        style={{ display: 'flex', alignItems: 'center', height: 60 }}
       >
         <button
           onClick={() => route('/')}
@@ -35,17 +42,16 @@ export function NavBar() {
             alpha
           </span>
         </button>
-        <div style={{ display: 'flex', gap: 4, flex: 1 }}>
+        <div class="nav-tabs">
           {TABS.map(([path, label]) => {
             const active = url === path || url.startsWith(path + '/');
             return (
               <button
                 key={path}
+                class="nav-tab"
                 onClick={() => route(path)}
                 style={{
-                  padding: '8px 12px',
                   borderRadius: 6,
-                  fontSize: 14,
                   color: active ? 'var(--fg)' : 'var(--fg-muted)',
                   fontWeight: active ? 500 : 400,
                 }}
@@ -55,16 +61,42 @@ export function NavBar() {
             );
           })}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div class="nav-right" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <a
             href="https://github.com/yaodub/cast"
             class="btn btn-secondary"
             style={{ padding: '7px 12px', fontSize: 13 }}
           >
-            <Github s={14} /> GitHub
+            <Github s={14} /> <span class="nav-gh-label">GitHub</span>
           </a>
+          <button
+            class="nav-menu-btn"
+            aria-label="Toggle navigation menu"
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            ☰
+          </button>
         </div>
       </div>
+      {menuOpen && (
+        <div class="nav-dropdown">
+          {TABS.map(([path, label]) => {
+            const active = url === path || url.startsWith(path + '/');
+            return (
+              <button
+                key={path}
+                onClick={() => go(path)}
+                style={{
+                  color: active ? 'var(--fg)' : 'var(--fg-muted)',
+                  fontWeight: active ? 500 : 400,
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </nav>
   );
 }

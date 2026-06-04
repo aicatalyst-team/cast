@@ -37,13 +37,7 @@ export function ExamplesIndex() {
         </p>
       </div>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 20,
-        }}
-      >
+      <div class="cols-2" style={{ gap: 20 }}>
         {examples.map((ex) => (
           <a
             key={ex.slug}

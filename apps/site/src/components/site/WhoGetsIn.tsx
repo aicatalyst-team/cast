@@ -341,7 +341,7 @@ export function WhoGetsIn() {
           <div class="badge" style={{ marginBottom: 14 }}>
             Who gets in
           </div>
-          <h2 style={{ margin: '0 0 16px', fontSize: 36, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          <h2 class="section-h2" style={{ margin: '0 0 16px', lineHeight: 1.1 }}>
             Talk to it on Telegram. You pick who else gets in.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--fg-muted)', margin: 0 }}>
@@ -351,8 +351,11 @@ export function WhoGetsIn() {
           </p>
         </div>
 
-        {/* Doors + the lock that gates them */}
+        {/* Doors + the lock that gates them. On phones the row stacks:
+            transports → pairing gate → machine, flowing down toward the
+            pairing chat below. */}
         <div
+          class="pairing-doors"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -361,7 +364,7 @@ export function WhoGetsIn() {
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div class="transport-stack" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {TRANSPORTS.map((t) => (
               <TransportCard key={t.key} t={t} />
             ))}

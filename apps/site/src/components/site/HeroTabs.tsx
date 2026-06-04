@@ -86,12 +86,12 @@ function TabButton({
   return (
     <button
       type="button"
+      class="hero-tab"
       onClick={onClick}
       style={{
         display: 'flex',
         alignItems: 'center',
         gap: 8,
-        padding: '9px 16px 10px',
         // Overlap the window's top border so the active tab connects to the
         // diagram surface below it; the inactive tab keeps its own bottom edge.
         marginBottom: -1,
@@ -107,7 +107,6 @@ function TabButton({
         borderBottom: `1px solid ${active ? SURFACE[kind] : BORDER}`,
         cursor: 'pointer',
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 13,
         fontWeight: 600,
         whiteSpace: 'nowrap',
       }}

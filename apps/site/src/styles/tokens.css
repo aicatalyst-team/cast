@@ -107,6 +107,164 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 .container-narrow { max-width: 880px; margin: 0 auto; padding: 0 32px; }
 
+/* Layout utilities. Rule of thumb: layout lives in CSS classes (it needs media
+   queries), visual styling stays inline. Callsites keep gap/align/margins
+   inline; these provide the columns and the phone collapse. */
+.cols-2 { display: grid; grid-template-columns: 1fr 1fr; }
+.cols-2-uneven { display: grid; grid-template-columns: 1fr 1.1fr; }
+@media (max-width: 640px) {
+  .cols-2,
+  .cols-2-uneven { grid-template-columns: 1fr; }
+}
+
+/* Display type. Desktop sizes are the clamp ceilings, so wide viewports render
+   pixel-identical to the old fixed values; below ~500px the type scales with
+   the viewport instead of wrapping badly. Callsites keep margins (and any
+   intentional size/spacing override) inline. */
+.section-h2 { font-size: clamp(28px, 7.5vw, 36px); letter-spacing: -0.02em; }
+
+/* NavBar — base values here so the phone block below can override without
+   !important. Colors/active state stay inline in NavBar.tsx. On phones the
+   tabs collapse into a dropdown under the bar (.nav-menu-btn / .nav-dropdown). */
+.nav-row { gap: 32px; }
+.nav-tabs { display: flex; gap: 4px; flex: 1; }
+.nav-tab { padding: 8px 12px; font-size: 14px; white-space: nowrap; }
+.nav-menu-btn,
+.nav-dropdown { display: none; }
+
+/* Hero mock tabs — sizing in CSS so the phone block can tighten them. */
+.hero-tab { padding: 9px 16px 10px; font-size: 13px; }
+
+/* Docs mobile nav drawer affordances — hidden on desktop, where the sidebar is
+   just a normal column. Turned on inside the mobile media query below. */
+.docs-nav-toggle,
+.docs-nav-backdrop { display: none; }
+
+/* Docs nav becomes a slide-in drawer below desktop width. Covers the whole
+   tablet / landscape-phone band (<=1024) where the 3-column docs layout would
+   otherwise starve the prose column. The toggle sticks just below the navbar;
+   the sidebar goes off-canvas and slides in over a backdrop. Inline sidebar
+   styles are overridden with !important. */
+@media (max-width: 1024px) {
+  /* Drop the right-hand TOC so the prose gets the width back. */
+  .docs-toc { display: none !important; }
+  .docs-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: sticky;
+    top: 68px;
+    z-index: 40;
+    margin-bottom: 18px;
+    padding: 7px 12px;
+    font: 600 13px/1 'JetBrains Mono', monospace;
+    color: var(--fg);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .docs-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 260px !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding: 64px 12px 24px 14px !important;
+    background: var(--bg) !important;
+    z-index: 70 !important;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+  }
+  .docs-sidebar.open { transform: translateX(0); }
+  .docs-nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 60;
+  }
+}
+
+/* NavBar mobile treatment — its own breakpoint, slightly above the phone
+   block: the full bar (wordmark + badge + three tabs + GitHub) needs ~645px,
+   so the dropdown takes over below 700 to avoid a squeeze band. */
+@media (max-width: 700px) {
+  .nav-row { gap: 12px; }
+  .nav-tabs { display: none; }
+  .nav-right { margin-left: auto; }
+  .nav-gh-label { display: none; }
+  .nav-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 17px;
+    line-height: 1;
+    color: var(--fg);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .nav-dropdown {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.3);
+  }
+  .nav-dropdown button {
+    text-align: left;
+    padding: 13px 20px;
+    font-size: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-dropdown button:last-child { border-bottom: none; }
+}
+
+/* Phone-only adjustments (task 106). Sections reflow for narrow viewports;
+   the mild zoom below is densification, not the old load-bearing 0.65 hack. */
+@media (max-width: 640px) {
+  /* Mild densification on top of the reflow (operator taste: full-size felt
+     like endless scrolling). Unlike the old 0.65 hack this isn't load-bearing —
+     the layout works at 1.0; the zoom just tightens it. --zoom mirrors the
+     value so viewport-unit compensation below can't drift from it. */
+  :root { zoom: 0.85; --zoom: 0.85; }
+  /* Under zoom, 100dvh resolves pre-zoom and the fixed drawer/backdrop fall
+     short of the screen bottom by exactly the zoom factor. Compensate. */
+  .docs-sidebar,
+  .docs-nav-backdrop {
+    height: calc(100dvh / var(--zoom)) !important;
+    max-height: none !important;
+  }
+  .container,
+  .container-narrow { padding: 0 16px; }
+  /* Hero tabs: tighten so both tabs (icons included) + the Preview pill fit
+     the strip down to 360px devices. */
+  .hero-tab { padding: 8px 7px 9px; font-size: 11px; }
+  /* Docs reference tables (FieldTable and hand-rolled ones) and the Home
+     receipts table are wider than a phone. Let each table scroll horizontally
+     instead of stretching the page — same pattern as .code pre. */
+  .docs-prose table,
+  .scroll-table {
+    display: block;
+    overflow-x: auto;
+  }
+  /* Pairing section: narrow the Telegram/Slack/Web transport cards a little on
+     phones, and stack the doors row — the pairing gate gets its own row
+     between the transports and the machine card / chat below. */
+  .transport-stack { max-width: 240px; }
+  .pairing-doors { flex-direction: column; }
+  /* "Two ways to write it": lift the Preview badge out of the green card's
+     corner so it sits like a tab sticking out above the top edge. */
+  .preview-tab { top: -25px !important; right: -2px !important; }
+}
+
 .badge {
   display: inline-flex;
   align-items: center;

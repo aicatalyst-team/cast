@@ -362,7 +362,9 @@
 [data-skin="y2k"] .hero-h1 {
   font-family: 'Inter', sans-serif !important;
   font-weight: 900 !important;
-  font-size: 76px !important;
+  /* 76px on desktop (11vw hits the ceiling at ~691px); scales down on phones
+     instead of wrapping catastrophically. Floor 40px. */
+  font-size: clamp(40px, 11vw, 76px) !important;
   line-height: 1.02 !important;
   letter-spacing: -0.035em !important;
   color: var(--y2k-ink) !important;

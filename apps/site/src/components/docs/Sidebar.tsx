@@ -5,8 +5,13 @@ import { docsSections, type DocPage } from '../../routes/docs/sidebar';
 // Height of the fade applied at whichever edge has more content scrolled past it.
 const FADE = 52;
 
-export function Sidebar() {
+export function Sidebar({ open = false, onNavigate }: { open?: boolean; onNavigate?: () => void }) {
   const { url, route } = useLocation();
+  // On mobile the sidebar is a drawer: navigating should close it.
+  const go = (u: string) => {
+    route(u);
+    onNavigate?.();
+  };
   const ref = useRef<HTMLElement>(null);
   const [fadeTop, setFadeTop] = useState(false);
   const [fadeBottom, setFadeBottom] = useState(false);
@@ -36,7 +41,7 @@ export function Sidebar() {
   return (
     <aside
       ref={ref}
-      class="no-scrollbar"
+      class={`no-scrollbar docs-sidebar${open ? ' open' : ''}`}
       style={{
         width: 240,
         flexShrink: 0,
@@ -67,7 +72,7 @@ export function Sidebar() {
             {section.title}
           </div>
           {section.items.map((item) => (
-            <SidebarItem key={item.url} item={item} currentUrl={url} route={route} />
+            <SidebarItem key={item.url} item={item} currentUrl={url} route={go} />
           ))}
         </div>
       ))}

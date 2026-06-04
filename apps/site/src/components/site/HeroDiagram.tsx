@@ -489,6 +489,29 @@ const STYLES = `
   .cast-hero-secondary > * { opacity: 0.5; }
   .cast-hero-frame.has-secondary .cast-hero-primary > * { opacity: 0.5; }
   .cast-hero-frame.has-secondary .cast-hero-secondary > * { opacity: 1; }
+
+  /* Static bubble sizing lives here (not inline) so the phone block below can
+     retune it. Dynamic per-bubble styling stays inline. */
+  .cast-hero-msg {
+    max-width: 70%;
+    padding: 11px 16px;
+    font-size: 14px;
+  }
+
+  /* Phones: a taller frame with smaller, wider bubbles and tighter panel
+     padding — more of the conversation visible at once. */
+  @media (max-width: 640px) {
+    .cast-hero-frame { aspect-ratio: 920 / 908; }
+    .cast-hero-primary, .cast-hero-secondary {
+      padding: 18px 14px 14px;
+      gap: 10px;
+    }
+    .cast-hero-msg {
+      max-width: 84%;
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+  }
 `;
 
 // --- Components -----------------------------------------------------------
@@ -1070,16 +1093,13 @@ function Bubble({
   const cls = noAnim ? '' : risen ? 'cast-hero-bubble-rise' : 'cast-hero-bubble';
   return (
     <div
-      className={cls}
+      className={`cast-hero-msg ${cls}`}
       style={{
         alignSelf,
-        maxWidth: '70%',
-        padding: '11px 16px',
         background: tone.bubbleBg,
         color: tone.bubbleFg,
         border: tone.bubbleBorder,
         borderRadius: radius,
-        fontSize: 14,
         lineHeight: 1.45,
         fontFamily: 'Inter, sans-serif',
         minHeight: 20,

@@ -484,14 +484,7 @@ function DualTracksDiagram() {
   return (
     <div>
       {/* Subsection 1 — prose + folder diagram (wide) */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1.1fr',
-          gap: 44,
-          alignItems: 'center',
-        }}
-      >
+      <div class="cols-2-uneven" style={{ gap: 44, alignItems: 'center' }}>
         <div>
           <p
             style={{
@@ -554,14 +547,7 @@ function DualTracksDiagram() {
           terminal tooling.
         </p>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 24,
-            marginBottom: 20,
-          }}
-        >
+        <div class="cols-2" style={{ gap: 24, marginBottom: 20 }}>
           <div
             style={{
               position: 'relative',
@@ -575,6 +561,7 @@ function DualTracksDiagram() {
             }}
           >
             <span
+              class="preview-tab"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -661,7 +648,7 @@ function DualTracksDiagram() {
         </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'stretch' }}>
+        <div class="cols-2" style={{ gap: 24, alignItems: 'stretch' }}>
           <ChatConsoleMock />
           <ClaudeCodeMock />
         </div>
@@ -822,7 +809,7 @@ export function Home() {
             <div class="badge" style={{ marginBottom: 14 }}>
               Why Cast exists
             </div>
-            <h2 style={{ margin: 0, fontSize: 40, letterSpacing: '-0.02em' }}>
+            <h2 class="section-h2" style={{ margin: 0, fontSize: 'clamp(30px, 8vw, 40px)' }}>
               Sound familiar?
             </h2>
           </div>
@@ -864,13 +851,8 @@ export function Home() {
           ].map((thread, i) => (
             <div
               key={i}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 22,
-                alignItems: 'center',
-                marginBottom: 36,
-              }}
+              class="cols-2"
+              style={{ gap: 22, alignItems: 'center', marginBottom: 36 }}
             >
               <div
                 class="case-letter"
@@ -932,7 +914,6 @@ export function Home() {
                   padding: '14px 18px',
                   boxShadow:
                     '0 1px 2px rgba(0,0,0,0.08), 0 10px 20px -8px rgba(0,0,0,0.20)',
-                  height: 240,
                   display: 'flex',
                   flexDirection: 'column',
                 }}
@@ -963,9 +944,7 @@ export function Home() {
             <div class="badge" style={{ marginBottom: 14 }}>
               Your files, your agent
             </div>
-            <h2
-              style={{ margin: 0, fontSize: 36, letterSpacing: '-0.02em', lineHeight: 1.1 }}
-            >
+            <h2 class="section-h2" style={{ margin: 0, lineHeight: 1.1 }}>
               An agent is a folder you can browse.
             </h2>
           </div>
@@ -985,9 +964,7 @@ export function Home() {
             <div class="badge" style={{ marginBottom: 14 }}>
               Enforce
             </div>
-            <h2
-              style={{ margin: '0 0 16px', fontSize: 36, letterSpacing: '-0.02em', lineHeight: 1.1 }}
-            >
+            <h2 class="section-h2" style={{ margin: '0 0 16px', lineHeight: 1.1 }}>
               Where the boundaries are drawn.
             </h2>
             <p
@@ -1113,14 +1090,14 @@ export function Home() {
             <div class="badge" style={{ marginBottom: 14 }}>
               The four claims
             </div>
-            <h2 style={{ margin: 0, fontSize: 36, letterSpacing: '-0.02em' }}>
+            <h2 class="section-h2" style={{ margin: 0 }}>
               Four things the harness enforces.
             </h2>
             <p style={{ margin: '10px 0 0', fontSize: 18, lineHeight: 1.5, fontStyle: 'italic', color: 'var(--fg-muted)' }}>
               You draw the lines. The harness holds them. The agent has no path around them.
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 18 }}>
+          <div class="cols-2" style={{ gap: 18 }}>
             {[
               {
                 title: "An agent that edits itself, but only where you let it.",
@@ -1181,7 +1158,7 @@ export function Home() {
             <div class="badge" style={{ marginBottom: 14 }}>
               Open source, for real
             </div>
-            <h2 style={{ margin: '0 0 12px', fontSize: 36, letterSpacing: '-0.02em' }}>
+            <h2 class="section-h2" style={{ margin: '0 0 12px' }}>
               MIT licensed. Full source. No hidden core.
             </h2>
             <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--fg)', margin: '0 0 14px' }}>
@@ -1205,7 +1182,7 @@ export function Home() {
             </p>
           </div>
 
-          <table style={{ width: '100%' }}>
+          <table class="scroll-table" style={{ width: '100%' }}>
             <thead>
               <tr>
                 <th style={{ width: '25%' }}>Item</th>
@@ -1255,7 +1232,7 @@ export function Home() {
             <div class="badge" style={{ marginBottom: 14 }}>
               Questions you might have
             </div>
-            <h2 style={{ margin: 0, fontSize: 36, letterSpacing: '-0.02em' }}>
+            <h2 class="section-h2" style={{ margin: 0 }}>
               We had them too.
             </h2>
           </div>
@@ -1267,9 +1244,10 @@ export function Home() {
       <section class="y2k-band-yellow" style={{ padding: '90px 0 70px' }}>
         <div class="container-narrow" style={{ textAlign: 'center' }}>
           <h2
+            class="section-h2"
             style={{
               margin: '0 0 16px',
-              fontSize: 48,
+              fontSize: 'clamp(32px, 9vw, 48px)',
               letterSpacing: '-0.025em',
               lineHeight: 1.05,
             }}
