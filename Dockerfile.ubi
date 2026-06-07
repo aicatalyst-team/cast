@@ -1,0 +1,65 @@
+# Cast PoC — UBI-based Dockerfile for OpenShift
+# Builds the Cast server (API + bundled web-UI) in a single container
+FROM registry.access.redhat.com/ubi9/nodejs-22
+
+# Switch to root for system deps
+USER 0
+
+# Install build deps for better-sqlite3 (C++ native addon)
+RUN dnf install -y gcc gcc-c++ make python3 && dnf clean all
+
+# Install pnpm globally
+RUN npm install -g pnpm@10
+
+WORKDIR /opt/app-root/src
+
+# Copy workspace config first for layer caching
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+
+# Copy all package.json files for dependency resolution
+COPY packages/cast/package.json packages/cast/package.json
+COPY packages/web-ui/package.json packages/web-ui/package.json
+COPY packages/web-fetch/package.json packages/web-fetch/package.json
+COPY packages/admin-schema/package.json packages/admin-schema/package.json
+COPY packages/agent-schema/package.json packages/agent-schema/package.json
+COPY packages/agent-kit/package.json packages/agent-kit/package.json
+COPY packages/agent-runner/package.json packages/agent-runner/package.json
+COPY packages/agent-service-base/package.json packages/agent-service-base/package.json
+COPY packages/ext-calendar/package.json packages/ext-calendar/package.json
+COPY packages/ext-email/package.json packages/ext-email/package.json
+COPY packages/ext-web-fetch/package.json packages/ext-web-fetch/package.json
+COPY packages/ext-whatsapp/package.json packages/ext-whatsapp/package.json
+COPY packages/extension-schema/package.json packages/extension-schema/package.json
+
+# Install deps
+RUN pnpm install --frozen-lockfile
+
+# Copy all source
+COPY . .
+
+# Build web-ui (static files)
+RUN pnpm --filter @getcast/web-ui build
+
+# Bundle server (produces dist/index.js with native externals in dist/node_modules/)
+RUN pnpm bundle
+
+# Create data directories
+RUN mkdir -p /opt/app-root/data/agents /opt/app-root/data/config
+
+# OpenShift compatibility
+RUN chgrp -R 0 /opt/app-root && chmod -R g=u /opt/app-root
+
+EXPOSE 8080
+
+USER 1001
+
+# Run the bundled server
+# CAST_PORT = API port, PORT = web-ui preview port
+# For PoC: run API + web-ui preview on same container
+ENV NODE_ENV=production \
+    CAST_PORT=8080 \
+    PORT=8081 \
+    CAST_AGENTS_DIR=/opt/app-root/data/agents \
+    CAST_CONFIG_DIR=/opt/app-root/data/config
+
+CMD ["node", "dist/index.js"]

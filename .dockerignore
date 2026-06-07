@@ -1,0 +1,17 @@
+.git
+*.md
+LICENSE
+!README.md
+kubernetes/
+poc-plan.md
+.autopoc/
+__pycache__/
+.env*
+*.pyc
+.claude/
+assets/
+.github/
+.husky/
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+SECURITY.md
