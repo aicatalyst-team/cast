@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: cast-server
-          image: image-registry.openshift-image-registry.svc:5000/autopoc-test-builds/poc-cast:latest
+          image: image-registry.openshift-image-registry.svc:5000/poc-cast/cast-server:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -41,17 +41,16 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+          # Server binds to 127.0.0.1 — use exec probe
           readinessProbe:
-            httpGet:
-              path: /api/agents
-              port: 8080
-            initialDelaySeconds: 15
+            exec:
+              command: ["node", "-e", "const h=require('http');h.get('http://127.0.0.1:8080/api/agents',(r)=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"]
+            initialDelaySeconds: 20
             periodSeconds: 10
             failureThreshold: 6
           livenessProbe:
-            httpGet:
-              path: /api/agents
-              port: 8080
+            exec:
+              command: ["node", "-e", "const h=require('http');h.get('http://127.0.0.1:8080/api/agents',(r)=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"]
             initialDelaySeconds: 30
             periodSeconds: 15
           securityContext:

@@ -49,7 +49,8 @@ RUN mkdir -p /opt/app-root/data/agents /opt/app-root/data/config
 # Install docker-cli stub — Cast requires a container runtime binary on PATH
 # to start. In this PoC the agent-runner won't be used, but the server needs
 # the 'docker' binary to pass the resolveRuntime() check at boot.
-RUN printf '#!/bin/sh\necho "Docker stub for Cast PoC (agents disabled)"\nexit 0\n' > /usr/local/bin/docker && \
+# Create docker stub that handles common subcommands the Cast server probes at startup
+RUN printf '#!/bin/sh\ncase "$1" in\n  info) echo "{\"ServerVersion\":\"stub\",\"OperatingSystem\":\"OpenShift PoC\"}";;\n  version) echo "Docker version stub (PoC)";;\n  ps|ls) echo "[]";;\n  *) echo "Docker stub for Cast PoC (agents disabled)";;\nesac\nexit 0\n' > /usr/local/bin/docker && \
     chmod +x /usr/local/bin/docker
 
 # OpenShift compatibility
