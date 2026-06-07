@@ -43,20 +43,22 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+          # Note: server binds 0.0.0.0 via CAST_BIND_ALL=1
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 20
           readinessProbe:
-            httpGet:
-              path: /api/agents
+            tcpSocket:
               port: 8080
-            initialDelaySeconds: 30
             periodSeconds: 10
-            failureThreshold: 6
           livenessProbe:
-            httpGet:
-              path: /api/agents
+            tcpSocket:
               port: 8080
-            initialDelaySeconds: 45
-            periodSeconds: 15
-            failureThreshold: 6
+            initialDelaySeconds: 60
+            periodSeconds: 30
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
