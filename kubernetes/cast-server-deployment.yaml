@@ -34,6 +34,8 @@ spec:
               value: "/opt/app-root/data/agents"
             - name: CAST_CONFIG_DIR
               value: "/opt/app-root/data/config"
+            - name: CAST_BIND_ALL
+              value: "1"
           resources:
             requests:
               memory: "512Mi"
@@ -41,18 +43,20 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
-          # Server binds to 127.0.0.1 — use exec probe
           readinessProbe:
-            exec:
-              command: ["node", "-e", "const h=require('http');h.get('http://127.0.0.1:8080/api/agents',(r)=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"]
-            initialDelaySeconds: 20
+            httpGet:
+              path: /api/agents
+              port: 8080
+            initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 6
           livenessProbe:
-            exec:
-              command: ["node", "-e", "const h=require('http');h.get('http://127.0.0.1:8080/api/agents',(r)=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"]
-            initialDelaySeconds: 30
+            httpGet:
+              path: /api/agents
+              port: 8080
+            initialDelaySeconds: 45
             periodSeconds: 15
+            failureThreshold: 6
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

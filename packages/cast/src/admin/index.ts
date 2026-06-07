@@ -89,9 +89,11 @@ export async function startAdminServer(port: number, deps: AdminDeps): Promise<R
   // --- Service admin reverse-proxy ---
   app.use('/agents', createProxyRouter(deps));
 
+  // PoC: bind to 0.0.0.0 when CAST_BIND_ALL is set (OpenShift readiness probes)
+  const bindAddr = process.env.CAST_BIND_ALL === '1' ? '0.0.0.0' : '127.0.0.1';
   const server = await new Promise<ReturnType<typeof app.listen>>((resolve, reject) => {
-    const srv = app.listen(actualPort, '127.0.0.1', () => {
-      logger.info({ port: actualPort }, 'Admin server listening on 127.0.0.1');
+    const srv = app.listen(actualPort, bindAddr, () => {
+      logger.info({ port: actualPort, bindAddr }, `Admin server listening on ${bindAddr}`);
       resolve(srv);
     });
     srv.on('error', reject);
