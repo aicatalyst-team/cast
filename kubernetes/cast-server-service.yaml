@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cast-server
+  namespace: poc-cast
+  labels:
+    app: cast-server
+    autopoc.io/project: cast
+spec:
+  type: ClusterIP
+  selector:
+    app: cast-server
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: api

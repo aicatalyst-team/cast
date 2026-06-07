@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: poc-cast
+  labels:
+    app.kubernetes.io/name: cast
+    app.kubernetes.io/managed-by: autopoc

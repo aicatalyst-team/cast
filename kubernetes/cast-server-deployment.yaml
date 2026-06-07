@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cast-server
+  namespace: poc-cast
+  labels:
+    app: cast-server
+    autopoc.io/project: cast
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cast-server
+  template:
+    metadata:
+      labels:
+        app: cast-server
+    spec:
+      containers:
+        - name: cast-server
+          image: image-registry.openshift-image-registry.svc:5000/autopoc-test-builds/poc-cast:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: api
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: CAST_PORT
+              value: "8080"
+            - name: PORT
+              value: "8081"
+            - name: CAST_AGENTS_DIR
+              value: "/opt/app-root/data/agents"
+            - name: CAST_CONFIG_DIR
+              value: "/opt/app-root/data/config"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /api/agents
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /api/agents
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
