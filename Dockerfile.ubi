@@ -46,6 +46,12 @@ RUN pnpm bundle
 # Create data directories
 RUN mkdir -p /opt/app-root/data/agents /opt/app-root/data/config
 
+# Install docker-cli stub — Cast requires a container runtime binary on PATH
+# to start. In this PoC the agent-runner won't be used, but the server needs
+# the 'docker' binary to pass the resolveRuntime() check at boot.
+RUN printf '#!/bin/sh\necho "Docker stub for Cast PoC (agents disabled)"\nexit 0\n' > /usr/local/bin/docker && \
+    chmod +x /usr/local/bin/docker
+
 # OpenShift compatibility
 RUN chgrp -R 0 /opt/app-root && chmod -R g=u /opt/app-root
 
@@ -54,11 +60,12 @@ EXPOSE 8080
 USER 1001
 
 # Run the bundled server
-# CAST_PORT = API port, PORT = web-ui preview port
-# For PoC: run API + web-ui preview on same container
+# CAST_PORT = API port
+# CAST_RUNTIME = docker (uses the stub binary)
 ENV NODE_ENV=production \
     CAST_PORT=8080 \
     PORT=8081 \
+    CAST_RUNTIME=docker \
     CAST_AGENTS_DIR=/opt/app-root/data/agents \
     CAST_CONFIG_DIR=/opt/app-root/data/config
 
